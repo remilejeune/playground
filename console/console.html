@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="/">
+
+  <title>ODS Widgets Sandbox</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://opendatasoft.github.io/ods-widgets/dist/ods-widgets.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="ng-cloak" ng-app="ods-widgets">
+
+    <div class="ods-box"
+            ng-init="
+                select='count(*) as count';
+                where='';
+                groupBy='range(no2, [0, 50, 100, 150, 200, 400]) as range_no2, 
+range(date_time, 1 year) as range_date'
+            ">
+            <ods-dataset-context
+                context="ctx"
+                ctx-domain="bristol"
+                ctx-dataset="air-quality-data-continuous">
+                <div class="query-area">
+                    <div class="queriesInputs">
+                        <h1>Select</h1>
+                        <textarea class="query-textarea" ng-model="select"></textarea>
+                    </div>
+                    <div class="queriesInputs">
+                        <h1>Where</h1>
+                        <textarea class="query-textarea" ng-model="where"></textarea>
+                    </div>
+                    <div class="queriesInputs">
+                        <h1>Group by</h1>
+                        <textarea class="query-textarea" ng-model="groupBy"></textarea>
+                    </div>
+                </div>
+                <div class="help">
+                    <b>Available fields:</b>
+                    <span ng-repeat="field in ctx.dataset.fields track by $index">
+                        {{field.name}} <span class="field-type">({{field.type}})</span><span ng-hide="$last">,</span>
+                    </span>
+                </div>
+                <button class="ods-button run-query" ng-click="querySelect = select; queryWhere = where; queryGroupBy = groupBy; queryOrderBy = orderBy;">
+                    Query
+                </button>
+                <div ods-adv-analysis="source"
+                    ods-adv-analysis-context="ctx"
+                    ods-adv-analysis-select="{{querySelect}}"
+                    ods-adv-analysis-where="{{queryWhere}}"
+                    ods-adv-analysis-group-by="{{queryGroupBy}}">
+
+                    <ods-vega-lite-chart spec='{
+                        "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+                        "data": {"name": "adva"},
+                        "mark": "bar",
+                        "encoding": {
+                            "x": {"aggregate": "sum", "field": "count", "type": "quantitative"},
+                            "y": {"field": "range_date", "type": "nominal"},
+                            "color": {"field": "range_no2", "type": "nominal"},
+                            "order": {"aggregate": "sum", "field": "range_no2", "type": "quantitative"}
+                        }
+                    }'
+                    values-adva="source">
+                </ods-vega-lite-chart>
+                    
+                    <ods-adv-table
+                        data="source"
+                        sort="genre DESC"
+                        sticky-header="true"
+                        sticky-first-column="true"
+                    >
+                    </ods-adv-table>
+                </div>
+            </ods-dataset-context>
+            </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-sanitize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/i18n/angular-locale_fr-fr.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/locale/fr.js"></script>
+  <script type="text/javascript" src="https://opendatasoft.github.io/ods-widgets/dist/ods-widgets.js"></script>
+
+  <script type="text/javascript">
+    var ods = angular.module('ods-widgets');
+    ods.run(function(gettextCatalog) {
+      gettextCatalog.setStrings('fr', {
+        'Clear all': 'Tout effacer',
+        'More': 'Voir plus',
+        'Less': 'Voir moins',
+        'Download image': 'Télécharger l\'image'
+      });
+      gettextCatalog.setCurrentLanguage('fr');
+    });
+  </script>
+
+  <script type="text/javascript">
+    angular.module('ods-widgets').config(function($locationProvider) {
+      $locationProvider.html5Mode(true);
+    });
+  </script>
+  
+  <script type="text/javascript">
+    angular.module('ods-widgets').config(function(ODSWidgetsConfigProvider) {
+      ODSWidgetsConfigProvider.setConfig({
+          "basemaps": [
+            {
+               "label": "Stamen",
+               "provider": "stamen.toner"
+            },
+            {
+              "url": "https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
+              "strictTMS": false,
+              "provider": "custom",
+              "label": "Thunderforest",
+              "id": "land"
+            }  
+          ]
+          });
+    });
+  </script>
+  
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+	</head>
+	<body>
+
+		<script>hljs.initHighlightingOnLoad();</script>
+
+		<script type="text/javascript">
+			function encode() {
+				var obj = document.getElementById('dencoder');
+				var unencoded = obj.value;
+				obj.value = encodeURIComponent(unencoded).replace(/'/g,"%27").replace(/"/g,"%22");	
+			}
+
+			function decode() {
+				var obj = document.getElementById('dencoder');
+				var encoded = obj.value;
+				obj.value = decodeURIComponent(encoded.replace(/\+/g,  " "));
+			}
+
+			function doit() {
+				var obj = document.getElementById('dencoder');
+				var encoded = obj.value;
+				obj.value = decodeURIComponent(encoded.replace(/\+/g,  " "));
+
+				console.log("coucou");
+				var url = new URL(obj.value);
+
+				let full = "";
+
+				const params = ["select", "where", "group_by", "order_by", "refine", "exclude", "start", "rows", "limit", "timezone"];
+				for (const x of params) {
+					if (url.searchParams.get(x)) {
+						full += " " + x.toUpperCase() + " " + url.searchParams.get(x);
+					}
+					document.getElementById(x).value = url.searchParams.get(x);
+				}
+				console.log(full);
+				document.getElementById("full").innerHTML = full;
+				hljs.highlightBlock(document.getElementById("full"));
+
+			}
+		</script>
+
+		<pre><code>https://data.ofgl.fr/api/v2/catalog/datasets/ofgl-base-regions-consolidee/aggregates?group_by=annee_join,+agregat&limit=10000&order_by=agregat+ASC,+annee_join+ASC&select=count(agregat)+as+nb_resultat,+annee_join,+agregat</code></pre>
+
+		<div>
+			<textarea id="dencoder" style="height: 100px;width: 400px;">https://data.ofgl.fr/api/v2/catalog/datasets/ofgl-base-regions-consolidee/aggregates?group_by=annee_join,+agregat&limit=10000&order_by=agregat+ASC,+annee_join+ASC&select=count(agregat)+as+nb_resultat,+annee_join,+agregat</textarea>
+			<button onclick="doit();">GO</button>
+			<div>
+				select <input type="text" id="select" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				where <input type="text" id="where" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				group_by <input type="text" id="group_by" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				order_by <input type="text" id="order_by" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				refine <input type="text" id="refine" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				exclude <input type="text" id="exclude" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				start <input type="text" id="start" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				rows <input type="text" id="rows" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				limit <input type="text" id="limit" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+				timezone <input type="text" id="timezone" style="height: 20px;width: 400px;"></input>
+			</div>
+			<div>
+		</div>
+		<pre><code class="lang-sql" id="full">select * from toto where prout = toto</code></pre>
+	</body>
+</html>

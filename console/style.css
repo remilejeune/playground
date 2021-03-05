@@ -1,0 +1,23 @@
+.query-area {
+    display: flex;
+}
+.queriesInputs {
+    flex-grow: 1;
+    padding: 0 5px;
+}
+textarea {
+    width: 100%;
+    height: 130px;
+}
+.help {
+    font-style: italic;
+    font-size: 10px;
+}
+button.run-query {
+    width: 100%;
+    margin: 15px 0;
+}
+div.odswidget-adv-table__container {
+    max-height: 500px;
+   /* max-width: 500px;*/
+}
