@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ODS Widgets Sandbox</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//static.opendatasoft.com/ods-widgets/latest-v2/ods-widgets.min.css">
+
+        <style>
+            .query-area {
+                display: flex;
+            }
+            .queriesInputs {
+                flex-grow: 1;
+                padding: 0 5px;
+            }
+            textarea {
+                width: 100%;
+                height: 130px;
+            }
+            .help {
+                font-style: italic;
+                font-size: 10px;
+            }
+            button.run-query {
+                width: 100%;
+                margin: 15px 0;
+            }
+            div.odswidget-adv-table__container {
+                max-height: 500px;
+               /* max-width: 500px;*/
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <div ng-cloak ng-app="ods-widgets">
+            <ods-dataset-context
+                context="ctx"
+                ctx-domain="https://widgets-examples.opendatasoft.com/"
+                ctx-dataset="les-arbres-remarquables-de-paris">
+
+           <div class="query-area" ng-init="
+                select='count(*) as count';
+                where='';
+                groupBy='range(no2, [0, 50, 100, 150, 200, 400]) as range_no2, 
+range(date_time, 1 year) as range_date'
+            ">
+                    <div class="queriesInputs">
+                        <h1>Select</h1>
+                        <textarea class="query-textarea" ng-model="select"></textarea>
+                    </div>
+                    <div class="queriesInputs">
+                        <h1>Where</h1>
+                        <textarea class="query-textarea" ng-model="where"></textarea>
+                    </div>
+                    <div class="queriesInputs">
+                        <h1>Group by</h1>
+                        <textarea class="query-textarea" ng-model="groupBy"></textarea>
+                    </div>
+                </div>
+                <div class="help">
+                    <b>Available fields:</b>
+                    <span ng-repeat="field in ctx.dataset.fields track by $index">
+                        {{field.name}} <span class="field-type">({{field.type}})</span><span ng-hide="$last">,</span>
+                    </span>
+                </div>
+                <button class="ods-button run-query" ng-click="querySelect = select; queryWhere = where; queryGroupBy = groupBy; queryOrderBy = orderBy;">
+                    Query
+                </button>
+
+            
+                <div ods-adv-analysis="data"
+                    ods-adv-analysis-context="ctx"
+                    ods-adv-analysis-select="{{querySelect}}"
+                    ods-adv-analysis-where="{{queryWhere}}"
+                    ods-adv-analysis-group-by="{{queryGroupBy}}">
+                    <ods-adv-table
+                        data="data"
+                        sort="espece ASC"
+                        totals="['count']"
+                        columns-order="['espece', 'count', 'genre', 'arrondissement', 'hauteur']"
+                        columns-options="{
+                            espece: {
+                                label: 'The species',
+                            },
+                            count: {
+                                decimals: 0,
+                                label: '#',
+                            },
+                            genre: {
+                                label: 'The genus',
+                            },
+                            arrondissement: {
+                                label: 'The district',
+                            },
+                            hauteur: {
+                                decimals: 2,
+                                label: 'The height (in meters)',
+                            },
+                        }"
+                        sticky-header="true"
+                        sticky-first-column="true">
+                    </ods-adv-table>
+                </div>
+            </ods-dataset-context>
+
+        </div>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.2/angular-sanitize.min.js"></script>
+        <script type="text/javascript" src="//static.opendatasoft.com/ods-widgets/latest-v2/ods-widgets.min.js"></script>
+    </body>
+</html>
+
+
+
+
