@@ -37,17 +37,26 @@
     <body>
 
         <div ng-cloak ng-app="ods-widgets">
-            <ods-dataset-context
-                context="ctx"
-                ctx-domain="https://widgets-examples.opendatasoft.com/"
-                ctx-dataset="les-arbres-remarquables-de-paris">
 
-           <div class="query-area" ng-init="
+            {{location.search}}
+            <div  ng-init="
                 select='count(*) as count';
                 where='';
-                groupBy='range(no2, [0, 50, 100, 150, 200, 400]) as range_no2, 
-range(date_time, 1 year) as range_date'
-            ">
+                groupBy='espece';
+                queryDataset=dataset;
+                querySelect=select;
+                queryDomain=domain;
+                queryWhere=where;
+                queryGroupBy=groupBy;
+                queryOrderBy=orderBy;
+                ">
+            <!--<label>Domain</label>
+            <input type="text" ng-model="domain" id="domain"/>
+            <label>Dataset</label>
+            <input type="text" ng-model="dataset" id="dataset"/>-->
+
+            
+           <div class="query-area">
                     <div class="queriesInputs">
                         <h1>Select</h1>
                         <textarea class="query-textarea" ng-model="select"></textarea>
@@ -67,11 +76,15 @@ range(date_time, 1 year) as range_date'
                         {{field.name}} <span class="field-type">({{field.type}})</span><span ng-hide="$last">,</span>
                     </span>
                 </div>
-                <button class="ods-button run-query" ng-click="querySelect = select; queryWhere = where; queryGroupBy = groupBy; queryOrderBy = orderBy;">
+                <button class="ods-button run-query" ng-click="queryDataset = dataset; queryDomain = domain; querySelect = select; queryWhere = where; queryGroupBy = groupBy; queryOrderBy = orderBy;">
                     Query
                 </button>
 
-            
+            <ods-dataset-context
+                context="ctx"   
+                ctx-domain="https://widgets-examples.opendatasoft.com"
+                ctx-dataset="les-arbres-remarquables-de-paris">
+
                 <div ods-adv-analysis="data"
                     ods-adv-analysis-context="ctx"
                     ods-adv-analysis-select="{{querySelect}}"
@@ -106,6 +119,7 @@ range(date_time, 1 year) as range_date'
                     </ods-adv-table>
                 </div>
             </ods-dataset-context>
+        </div>
 
         </div>
 
